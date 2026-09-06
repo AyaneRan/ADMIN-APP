@@ -10,6 +10,7 @@
 ## 構成
 - 画面仕様: `retail-management-screen-spec-final.md`
 - 画面遷移: `retail-management-screen-flow-map.md`
+- 画面仕様×API実装の最終プレイブック: `retail-management-screen-implementation-playbook.md`
 - API要件: `retail-management-screen-api-matrix.md`
 - 多店舗拡張方針: `retail-management-multistore-extension-spec.md`
 - 実装チケット: `retail-management-implementation-tickets-v2.md`

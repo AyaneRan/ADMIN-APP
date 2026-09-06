@@ -10,6 +10,7 @@ Sprint1の仕様・設計・実装下書きをまとめたGit管理リポジト�
 - outputs/retail-management-screen-flow-map.md
 - outputs/retail-management-implementation-tickets-v2.md
 - outputs/retail-management-one-page-summary.md
+- outputs/retail-management-screen-implementation-playbook.md
 - outputs/retail-management-multistore-extension-spec.md
 - outputs/retail-management-screen-api-matrix.md
 - outputs/retail-management-implementation-tickets-v1.md
