@@ -92,17 +92,9 @@
 
 ## 8. openapiとの差分（実装前提）
 
-- 追加必須（未存在）
-  - `/api/dashboard/*`
-  - `/api/products/:id` / `/api/products/:id/toggle-active` / `/api/products/import`
-  - `/api/inventory/alerts`
-  - `/api/inventory/cross-stores`
-  - `/api/reports/stores/comparison`
-  - `/api/staff/payroll`
-
-- 確認要（既存未記載可能性）
-  - `/api/reports/kpi` のレスポンス項目（画面のKPI目標との整合）
-  - `/api/pos/import-logs` の `retry_count` / 担当者アサイン項目
+- 追加反映状況（openapi側）
+  - すべてのP0/P1/P2エンドポイントを追加済み
+  - 残作業: openapiレスポンス項目の詳細化（`dashboard` / `monthClose` / `payroll` / `cross-store` の個別項目）
 
 ## 9. 受入基準（画面別）
 

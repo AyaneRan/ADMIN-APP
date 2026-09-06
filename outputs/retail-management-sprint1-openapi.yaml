@@ -414,6 +414,530 @@ paths:
             text/csv:
               schema:
                 type: string
+  /dashboard/today:
+    get:
+      summary: ダッシュボード当日サマリ
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: 当日サマリ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardToday'
+  /dashboard/alerts:
+    get:
+      summary: ダッシュボードアラート
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum: [critical, warning, info]
+      responses:
+        '200':
+          description: アラート一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardAlertList'
+  /products:
+    get:
+      summary: 商品一覧
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: isActive
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: 商品一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductList'
+    post:
+      summary: 商品登録
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: 登録成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /products/{id}:
+    get:
+      summary: 商品詳細
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 商品詳細
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    patch:
+      summary: 商品更新
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /products/{id}/toggle-active:
+    patch:
+      summary: 商品有効/無効切替
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleActiveRequest'
+      responses:
+        '200':
+          description: 切替完了
+  /products/import:
+    post:
+      summary: 商品CSV一括インポート
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductImportRequest'
+      responses:
+        '202':
+          description: 取り込み受理
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductImportResult'
+  /inventory/stocks:
+    get:
+      summary: 在庫一覧
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: q
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 在庫一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryStockList'
+  /inventory/alerts:
+    get:
+      summary: 在庫アラート
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: alertType
+          in: query
+          schema:
+            type: string
+            enum: [shortage, expiring]
+      responses:
+        '200':
+          description: 在庫アラート一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryAlertList'
+  /inventory/movements:
+    get:
+      summary: 入出庫履歴
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: 入出庫一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryMovementList'
+    post:
+      summary: 在庫手入力補正
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryMovementRequest'
+      responses:
+        '201':
+          description: 補正登録済み
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryMovement'
+  /inventory/counts:
+    get:
+      summary: 棚卸履歴
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: 棚卸履歴
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryCountList'
+    post:
+      summary: 棚卸開始/確定
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryCount'
+      responses:
+        '201':
+          description: 棚卸保存
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryCount'
+  /inventory/counts/{id}/approve:
+    patch:
+      summary: 棚卸承認
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: false
+      responses:
+        '200':
+          description: 承認済み
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryCount'
+  /staff/schedules:
+    get:
+      summary: シフト一覧
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: シフト一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffScheduleList'
+    post:
+      summary: シフト登録
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffSchedule'
+      responses:
+        '201':
+          description: 登録完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffSchedule'
+  /staff/schedules/{id}:
+    patch:
+      summary: シフト更新
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffSchedule'
+      responses:
+        '200':
+          description: 更新完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffSchedule'
+  /staff/attendance:
+    get:
+      summary: 勤務実績一覧
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: 勤務実績一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffAttendanceList'
+    post:
+      summary: 勤務入力
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffAttendance'
+      responses:
+        '201':
+          description: 登録完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffAttendance'
+  /staff/attendance/{id}/approve:
+    patch:
+      summary: 勤務実績承認
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 承認完了
+  /staff/payroll:
+    get:
+      summary: 人件費集計
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: 人件費一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffPayroll'
+  /expenses:
+    get:
+      summary: 経費一覧
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: 経費一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseList'
+    post:
+      summary: 経費登録
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Expense'
+      responses:
+        '201':
+          description: 登録完了
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+  /expenses/{id}/approve:
+    patch:
+      summary: 経費承認
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 承認完了
+  /expense-categories:
+    get:
+      summary: 経費科目一覧
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: 科目一覧
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseCategoryList'
+    post:
+      summary: 経費科目登録
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseCategory'
+      responses:
+        '201':
+          description: 登録完了
+  /reports/pnl:
+    get:
+      summary: 月次損益取得
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+        - name: targetMonth
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 2026-09
+      responses:
+        '200':
+          description: 損益データ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PnLReport'
+  /reports/month-close:
+    post:
+      summary: 月次ロック
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonthCloseRequest'
+      responses:
+        '200':
+          description: ロック結果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthCloseResult'
+  /reports/month-unlock:
+    post:
+      summary: 月次解除
+      parameters:
+        - $ref: '#/components/parameters/StoreId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonthCloseRequest'
+      responses:
+        '200':
+          description: 解除結果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthCloseResult'
+  /reports/stores/comparison:
+    get:
+      summary: 店舗比較
+      parameters:
+        - name: storeIds
+          in: query
+          required: true
+          schema:
+            type: string
+            description: カンマ区切りUUID
+      responses:
+        '200':
+          description: 店舗比較結果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreComparison'
+  /inventory/cross-stores:
+    get:
+      summary: 店舗横断在庫
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 店舗横断在庫
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryCrossStore'
 components:
   securitySchemes:
     bearerAuth:
@@ -849,4 +1373,467 @@ components:
               amount:
                 type: number
               unit:
+                type: number
+    DashboardToday:
+      type: object
+      properties:
+        targetDate:
+          type: string
+          format: date
+        todaySales:
+          type: number
+        todayGrossProfit:
+          type: number
+        orderCount:
+          type: integer
+        alertCount:
+          type: integer
+        unsyncedPosCount:
+          type: integer
+        scheduleFulfillmentRate:
+          type: number
+          format: float
+    DashboardAlert:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        level:
+          type: string
+          enum: [critical, warning, info]
+        title:
+          type: string
+        message:
+          type: string
+        source:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    DashboardAlertList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardAlert'
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        storeId:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        name:
+          type: string
+        categoryId:
+          type: string
+          format: uuid
+        costPrice:
+          type: number
+        sellPrice:
+          type: number
+        taxRate:
+          type: number
+        minStock:
+          type: number
+        shelfLocation:
+          type: string
+        isActive:
+          type: boolean
+    ProductList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        total:
+          type: integer
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        categoryId:
+          type: string
+          format: uuid
+        costPrice:
+          type: number
+        sellPrice:
+          type: number
+        taxRate:
+          type: number
+        minStock:
+          type: number
+        shelfLocation:
+          type: string
+    ToggleActiveRequest:
+      type: object
+      required:
+        - isActive
+      properties:
+        isActive:
+          type: boolean
+    ProductImportRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    ProductImportResult:
+      type: object
+      properties:
+        imported:
+          type: integer
+        updated:
+          type: integer
+        failed:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              message:
+                type: string
+    InventoryStock:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        onHandQty:
+          type: number
+        reservedQty:
+          type: number
+        availableQty:
+          type: number
+        minStock:
+          type: number
+        lastMovementAt:
+          type: string
+          format: date-time
+    InventoryStockList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryStock'
+    InventoryAlert:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        productName:
+          type: string
+        alertType:
+          type: string
+          enum: [shortage, expiring]
+        shortageQty:
+          type: number
+        currentQty:
+          type: number
+        shortBy:
+          type: number
+        expiredAt:
+          type: string
+          format: date
+    InventoryAlertList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryAlert'
+    InventoryMovement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        movementType:
+          type: string
+          enum: [in, out, return_adjust, stocktake_adjust, transfer_in, transfer_out]
+        qty:
+          type: number
+        occurredAt:
+          type: string
+          format: date-time
+        reason:
+          type: string
+    InventoryMovementRequest:
+      type: object
+      required:
+        - productId
+        - movementType
+        - qty
+        - reason
+      properties:
+        productId:
+          type: string
+          format: uuid
+        movementType:
+          type: string
+          enum: [in, out, return_adjust, stocktake_adjust, transfer_in, transfer_out]
+        qty:
+          type: number
+        reason:
+          type: string
+    InventoryMovementList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryMovement'
+    InventoryCount:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        countedQty:
+          type: number
+        systemQty:
+          type: number
+        diffQty:
+          type: number
+        status:
+          type: string
+          enum: [draft, submitted, approved, applied]
+        reasonCode:
+          type: string
+    InventoryCountList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryCount'
+    StaffSchedule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        workDate:
+          type: string
+          format: date
+        startAt:
+          type: string
+          format: time
+        endAt:
+          type: string
+          format: time
+        breakMinutes:
+          type: integer
+        status:
+          type: string
+    StaffScheduleList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffSchedule'
+    StaffAttendance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        clockInAt:
+          type: string
+          format: date-time
+        clockOutAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+        memo:
+          type: string
+    StaffAttendanceList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffAttendance'
+    StaffPayroll:
+      type: object
+      properties:
+        month:
+          type: string
+          example: 2026-09
+        totalPayroll:
+          type: number
+        payrollByPerson:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+                format: uuid
+              userName:
+                type: string
+              totalHours:
+                type: number
+              totalCost:
+                type: number
+    Expense:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        spentAt:
+          type: string
+          format: date-time
+        categoryId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+        vendor:
+          type: string
+        memo:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+    ExpenseList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Expense'
+    ExpenseCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        isFixedCost:
+          type: boolean
+        isActive:
+          type: boolean
+    ExpenseCategoryList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpenseCategory'
+    PnLReport:
+      type: object
+      properties:
+        targetMonth:
+          type: string
+        sales:
+          type: number
+        cogs:
+          type: number
+        grossProfit:
+          type: number
+        payroll:
+          type: number
+        fixedCost:
+          type: number
+        operatingProfit:
+          type: number
+        locked:
+          type: boolean
+    MonthCloseRequest:
+      type: object
+      required:
+        - targetMonth
+      properties:
+        targetMonth:
+          type: string
+          example: 2026-09
+        reason:
+          type: string
+    MonthCloseResult:
+      type: object
+      properties:
+        targetMonth:
+          type: string
+          example: 2026-09
+        status:
+          type: string
+          enum: [open, locked]
+        updatedAt:
+          type: string
+          format: date-time
+    StoreComparison:
+      type: object
+      properties:
+        targetMonth:
+          type: string
+        stores:
+          type: array
+          items:
+            type: object
+            properties:
+              storeId:
+                type: string
+              storeName:
+                type: string
+              sales:
+                type: number
+              grossProfitRate:
+                type: number
+              stockoutRate:
+                type: number
+              laborRate:
+                type: number
+    InventoryCrossStore:
+      type: object
+      properties:
+        productId:
+          type: string
+        sku:
+          type: string
+        productName:
+          type: string
+        stores:
+          type: array
+          items:
+            type: object
+            properties:
+              storeId:
+                type: string
+              storeName:
+                type: string
+              onHandQty:
                 type: number
