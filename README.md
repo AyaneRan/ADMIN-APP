@@ -39,4 +39,12 @@ git push -u origin main
 PowerShell:
 ```
 .\publish-to-github.ps1 -Owner "<owner>" -Repo "<repo>"
+
+# 既存リポジトリにpush
+.\publish-to-github.ps1 -Owner "my-github-id" -Repo "retail-management-sprint1"
+
+# リポジトリが未作成なら作成してからpush（PAT必須）
+.\publish-to-github.ps1 -Owner "my-github-id" -Repo "retail-management-sprint1" -CreateIfMissing -Token "<your_personal_access_token>"
 ```
+
+`-CreateIfMissing` と `-Token` を付けると、存在しない場合に指定リポジトリを作成します。
