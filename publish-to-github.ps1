@@ -8,11 +8,49 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+param(
+  [Parameter(Mandatory=$false)]
+  [switch]$CreateIfMissing,
+
+  [Parameter(Mandatory=$false)]
+  [string]$Description = "Retail management sprint1 docs and impl drafts",
+
+  [Parameter(Mandatory=$false)]
+  [switch]$Private = $true,
+
+  [Parameter(Mandatory=$false)]
+  [string]$Token = $null
+)
+
 $repoUrl = "https://github.com/$Owner/$Repo.git"
 git remote remove origin 2>$null | Out-Null
+
+if ($CreateIfMissing -and -not $Token) {
+  throw "CreateIfMissing requires -Token (GitHub personal access token)."
+}
+
+if ($CreateIfMissing) {
+  # Create repo via GitHub API (token auth required)
+  $payload = @{
+    name        = $Repo
+    description = $Description
+    private     = [bool]$Private
+  } | ConvertTo-Json
+  $headers = @{
+    Authorization = "token $Token"
+    "User-Agent"  = "codex-publish-script"
+    Accept        = "application/vnd.github+json"
+  }
+  Write-Host "[1/3] creating repo if missing: $Owner/$Repo"
+  $apiUrl = "https://api.github.com/user/repos"
+  Invoke-RestMethod -Method Post -Uri $apiUrl -Body $payload -Headers $headers -ContentType "application/json" | Out-Null
+}
+
+Write-Host "[2/3] remote set: $repoUrl"
 git remote add origin $repoUrl
 git branch -M main
-
-Write-Host "[1/2] remote set: $repoUrl"
-Write-Host "[2/2] pushing..."
+Write-Host "[3/3] pushing..."
 git push -u origin main
+
+Write-Host "Done. Repository URL:"
+Write-Host "https://github.com/$Owner/$Repo"
