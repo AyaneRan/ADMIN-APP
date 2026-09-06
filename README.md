@@ -5,6 +5,7 @@ Sprint1の仕様・設計・実装下書きをまとめたGit管理リポジト�
 
 ## 含まれるファイル
 - outputs/retail-management-screen-spec-v1.md
+- outputs/retail-management-screen-spec-final.md
 - outputs/retail-management-data-model-v1.md
 - outputs/retail-management-implementation-tickets-v1.md
 - outputs/retail-management-sprint1-openapi.yaml
@@ -18,6 +19,7 @@ Sprint1の仕様・設計・実装下書きをまとめたGit管理リポジト�
 ## Commit
 - 33dfc21: 初回コミット（出力集約）
 - b9359dc: Sprint1成果物10件を正規化して追加
+- 画面仕様v2（確定版）追加（最新）
 
 ## GitHub 公開手順
 このリポジトリの中身は既にコミット済みです。GitHubへ公開する場合は、以下を実行してください。
