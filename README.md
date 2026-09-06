@@ -7,6 +7,9 @@ Sprint1の仕様・設計・実装下書きをまとめたGit管理リポジト�
 - outputs/retail-management-screen-spec-v1.md
 - outputs/retail-management-screen-spec-final.md
 - outputs/retail-management-data-model-v1.md
+- outputs/retail-management-screen-flow-map.md
+- outputs/retail-management-multistore-extension-spec.md
+- outputs/retail-management-screen-api-matrix.md
 - outputs/retail-management-implementation-tickets-v1.md
 - outputs/retail-management-sprint1-openapi.yaml
 - outputs/retail-management-sprint1-ddl.sql
